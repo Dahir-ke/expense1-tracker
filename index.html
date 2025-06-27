@@ -151,7 +151,7 @@
       <textarea id="description" rows="3" placeholder="Add details..."></textarea>
     </div>
     <button id="submitExpense">Add to Google Sheet</button>
-    <a href="https://docs.google.com/spreadsheets/d/1DozKALIJ3HjTMbTE2uBMPJCh6tiU7uN-EEN_dQmLHUE/edit" target="_blank">View Google Sheet</a>
+    <a href="https://docs.google.com/spreadsheets/d/1xgi_YaV-I_U6g2PIYuQV7GFWu2DZMvcoYqsstsr9tG4/edit" target="_blank">View Google Sheet</a>
   </div>
 
   <script>
@@ -257,7 +257,6 @@
 
         const result = await response.json();
         if (result.success) {
-          document.querySelector('form')?.reset?.();
           amountInput.value = '';
           subcategorySelect.value = '';
           categorySelect.value = '';
