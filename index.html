@@ -237,6 +237,22 @@
       margin-right: 12px;
     }
     
+    /* Error troubleshooting section */
+    .troubleshoot {
+      background: #fff8e1;
+      border-left: 4px solid #ffc107;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    
+    .troubleshoot h4 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
     /* Responsive Design */
     @media (max-width: 768px) {
       .form-container {
@@ -274,6 +290,16 @@
     </div>
     
     <div id="add-expense" class="tab-content active">
+      <div class="troubleshoot">
+        <h4><i class="fas fa-exclamation-triangle"></i> Connection Issue Detected</h4>
+        <p>We're having trouble connecting to the server. Please check:</p>
+        <ul>
+          <li>Your internet connection</li>
+          <li>Ad blockers or security extensions</li>
+          <li>Google Apps Script deployment settings</li>
+        </ul>
+      </div>
+      
       <div class="form-container">
         <div class="form-section">
           <h3><i class="fas fa-plus-circle"></i> Expense Details</h3>
@@ -324,6 +350,10 @@
           
           <button id="submitBtn">
             <i class="fas fa-plus"></i> Add Expense
+          </button>
+          
+          <button id="saveLocalBtn" style="background: #9e9e9e;">
+            <i class="fas fa-save"></i> Save Locally
           </button>
         </div>
       </div>
@@ -418,6 +448,7 @@
   <script>
     const SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbyk64bzWBIymraGy2c0A0bsG1mKbhdXeEmbNSKJiH3ZegWIb0SjMDmoChlT1_qUP5KZRg/exec';
     const statusEl = document.getElementById("statusMessage");
+    let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
 
     // Set today's date as default for the date field
     document.getElementById('expense-date').valueAsDate = new Date();
@@ -637,7 +668,7 @@
       });
     }
 
-    // Submit expense form
+    // Submit expense form to Google Apps Script
     document.getElementById("submitBtn").addEventListener("click", async () => {
       const amount = document.getElementById("amount").value;
       const subcategory = document.getElementById("subcategory").value;
@@ -677,18 +708,57 @@
         const result = await response.json();
         if (result.success) {
           showStatus("✅ Expense added successfully!", "success");
-          document.getElementById("amount").value = "";
-          document.getElementById("subcategory").value = "";
-          document.getElementById("mode").value = "";
-          document.getElementById("description").value = "";
-          document.getElementById("expense-date").valueAsDate = new Date();
+          clearForm();
         } else {
           showStatus("❌ Failed to save: " + result.error, "error");
         }
       } catch (error) {
-        showStatus("❌ Error: " + error.message, "error");
+        console.error('Error details:', error);
+        showStatus("❌ Network Error: Failed to connect to server. Try saving locally.", "error");
       }
     });
+
+    // Save expense to localStorage
+    document.getElementById("saveLocalBtn").addEventListener("click", () => {
+      const amount = document.getElementById("amount").value;
+      const subcategory = document.getElementById("subcategory").value;
+      const mode = document.getElementById("mode").value;
+      const description = document.getElementById("description").value;
+      const expenseDate = document.getElementById("expense-date").value;
+
+      if (!amount || !subcategory || !mode || !expenseDate) {
+        showStatus("Please fill all required fields", "error");
+        return;
+      }
+
+      const [category, categoryType, nature] = expenseCategories[subcategory] || ["", "", ""];
+      
+      const expense = {
+        amount,
+        subcategory,
+        category,
+        categoryType,
+        nature,
+        mode,
+        description,
+        date: new Date(expenseDate).toISOString()
+      };
+      
+      expenses.push(expense);
+      localStorage.setItem('expenses', JSON.stringify(expenses));
+      showStatus("💾 Expense saved locally!", "success");
+      
+      // Clear form after saving
+      clearForm();
+    });
+
+    function clearForm() {
+      document.getElementById("amount").value = "";
+      document.getElementById("subcategory").value = "";
+      document.getElementById("mode").value = "";
+      document.getElementById("description").value = "";
+      document.getElementById("expense-date").valueAsDate = new Date();
+    }
 
     function showStatus(message, type) {
       statusEl.textContent = message;
@@ -701,6 +771,11 @@
     window.onload = function() {
       initDashboardCharts();
       initReportCharts();
+      
+      // Show a warning if we have locally saved expenses
+      if (expenses.length > 0) {
+        showStatus(`⚠️ You have ${expenses.length} expense(s) saved locally. Connect to sync.`, "loading");
+      }
     };
   </script>
 </body>
