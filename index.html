@@ -1,5 +1,5 @@
 <script>
-  const SUBMIT_URL = 'https://sheetdb.io/api/v1/your-real-id-here'; // <-- replace this with the API you got from SheetDB
+  const SUBMIT_URL = 'https://sheetdb.io/api/v1/YOUR_ACTUAL_SHEETDB_ID_HERE'; // 👈 Replace with your SheetDB API URL
 
   function submitData() {
     const amount = document.getElementById('amount').value;
@@ -15,8 +15,11 @@
       return;
     }
 
+    const today = new Date().toLocaleDateString('en-GB'); // Format: DD/MM/YYYY
+
     const data = {
       data: {
+        date: today,
         amount,
         subcategory,
         category,
@@ -36,10 +39,18 @@
     })
     .then(res => res.json())
     .then(result => {
-      document.getElementById('statusMsg').textContent = "✅ Saved!";
+      document.getElementById('statusMsg').textContent = "✅ Expense saved!";
+      // Reset form
+      document.getElementById('amount').value = '';
+      document.getElementById('subcategory').value = '';
+      document.getElementById('category').value = '';
+      document.getElementById('categoryType').value = '';
+      document.getElementById('nature').value = '';
+      document.getElementById('mode').value = '';
+      document.getElementById('description').value = '';
     })
     .catch(err => {
-      document.getElementById('statusMsg').textContent = "❌ Failed: " + err.message;
+      document.getElementById('statusMsg').textContent = "❌ Submit failed: " + err.message;
     });
   }
 </script>
