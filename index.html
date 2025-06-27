@@ -1,5 +1,5 @@
 <script>
-  const SUBMIT_URL = 'https://corsproxy.io/?https://script.google.com/macros/s/AKfycbyxUZawt9GspidEMVlM8Fz5s32fwBp4ykSpIOjR6W8fSmPeAQHcSQSoPTqH315dDhwC/exec';
+  const SUBMIT_URL = 'https://sheetdb.io/api/v1/your-real-id-here'; // <-- replace this with the API you got from SheetDB
 
   function submitData() {
     const amount = document.getElementById('amount').value;
@@ -16,13 +16,15 @@
     }
 
     const data = {
-      amount,
-      subcategory,
-      category,
-      categoryType,
-      nature,
-      mode,
-      description
+      data: {
+        amount,
+        subcategory,
+        category,
+        categoryType,
+        nature,
+        mode,
+        description
+      }
     };
 
     document.getElementById('statusMsg').textContent = "Sending...";
@@ -34,14 +36,10 @@
     })
     .then(res => res.json())
     .then(result => {
-      if (result.success) {
-        document.getElementById('statusMsg').textContent = "✅ Expense saved!";
-      } else {
-        document.getElementById('statusMsg').textContent = "❌ Error: " + result.error;
-      }
+      document.getElementById('statusMsg').textContent = "✅ Saved!";
     })
     .catch(err => {
-      document.getElementById('statusMsg').textContent = "❌ Submit failed: " + err.message;
+      document.getElementById('statusMsg').textContent = "❌ Failed: " + err.message;
     });
   }
 </script>
