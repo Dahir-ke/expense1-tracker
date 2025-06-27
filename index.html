@@ -1,284 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense Tracker</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h2 {
-            color: #333;
-            text-align: center;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background: #4285f4;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #3367d6;
-        }
-        .status {
-            text-align: center;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            display: none;
-        }
-        .status.success {
-            background: #e6f4ea;
-            color: #34a853;
-            display: block;
-        }
-        .status.error {
-            background: #ffe6e6;
-            color: #ea4335;
-            display: block;
-        }
-        .status.loading {
-            background: #fff3e0;
-            color: #fbbc05;
-            display: block;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Expense Tracker</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #333;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #3367d6;
+    }
+    .status {
+      text-align: center;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      display: none;
+    }
+    .status.success {
+      background: #e6f4ea;
+      color: #34a853;
+      display: block;
+    }
+    .status.error {
+      background: #ffe6e6;
+      color: #ea4335;
+      display: block;
+    }
+    .status.loading {
+      background: #fff3e0;
+      color: #fbbc05;
+      display: block;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Add Expense</h2>
-        <div id="statusMessage" class="status"></div>
-        <div class="form-group">
-            <label for="amount">Amount (Ksh)</label>
-            <input type="number" id="amount" placeholder="Enter amount" step="0.01" min="0" required>
-        </div>
-        <div class="form-group">
-            <label for="subcategory">Sub-category</label>
-            <select id="subcategory" required>
-                <option value="">Select a sub-category</option>
-                <option value="Clothes">Clothes</option>
-                <option value="Coffee">Coffee</option>
-                <option value="My Family">My Family</option>
-                <option value="Home Expenses">Home Expenses</option>
-                <option value="Donation">Donation</option>
-                <option value="Gas/Electrics">Gas/Electrics</option>
-                <option value="Groceries">Groceries</option>
-                <option value="Gym">Gym</option>
-                <option value="Education Loan">Education Loan</option>
-                <option value="Phone">Phone</option>
-                <option value="Rent & Wifi">Rent & Wifi</option>
-                <option value="Food">Food</option>
-                <option value="Salary">Salary</option>
-                <option value="Transport">Transport</option>
-                <option value="Medicine">Medicine</option>
-                <option value="Transaction Cost">Transaction Cost</option>
-                <option value="Miscellaneous">Miscellaneous</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="category">Category</label>
-            <select id="category" required>
-                <option value="">Select a category</option>
-                <option value="Discretionary">Discretionary</option>
-                <option value="Dining Out">Dining Out</option>
-                <option value="Living Expenses">Living Expenses</option>
-                <option value="Charity">Charity</option>
-                <option value="Transport">Transport</option>
-                <option value="Medical">Medical</option>
-                <option value="Mpesa Transaction cost">Mpesa Transaction cost</option>
-                <option value="Salary">Salary</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="categoryType">Category Type</label>
-            <select id="categoryType" required>
-                <option value="">Select category type</option>
-                <option value="Expense">Expense</option>
-                <option value="Income">Income</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="nature">Nature</label>
-            <select id="nature" required>
-                <option value="">Select nature</option>
-                <option value="FIXED">FIXED</option>
-                <option value="Variable">Variable</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="mode">Mode of Payment</label>
-            <select id="mode" required>
-                <option value="">Select payment mode</option>
-                <option value="Mpesa">Mpesa</option>
-                <option value="Cash">Cash</option>
-                <option value="Checking">Checking</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="description">Description (Optional)</label>
-            <textarea id="description" rows="3" placeholder="Add details..."></textarea>
-        </div>
-        <button id="submitExpense">Add to Google Sheet</button>
-        <a href="https://docs.google.com/spreadsheets/d/1DozKALIJ3HjTMbTE2uBMPJCh6tiU7uN-EEN_dQmLHUE/edit" target="_blank">View Google Sheet</a>
+  <div class="container">
+    <h2>Add Expense</h2>
+    <div id="statusMessage" class="status"></div>
+    <div class="form-group">
+      <label for="amount">Amount (Ksh)</label>
+      <input type="number" id="amount" placeholder="Enter amount" step="0.01" min="0" required>
     </div>
+    <div class="form-group">
+      <label for="subcategory">Sub-category</label>
+      <select id="subcategory" required>
+        <option value="">Select a sub-category</option>
+        <option value="Clothes">Clothes</option>
+        <option value="Coffee">Coffee</option>
+        <option value="My Family">My Family</option>
+        <option value="Home Expenses">Home Expenses</option>
+        <option value="Donation">Donation</option>
+        <option value="Gas/Electrics">Gas/Electrics</option>
+        <option value="Groceries">Groceries</option>
+        <option value="Gym">Gym</option>
+        <option value="Education Loan">Education Loan</option>
+        <option value="Phone">Phone</option>
+        <option value="Rent & Wifi">Rent & Wifi</option>
+        <option value="Food">Food</option>
+        <option value="Salary">Salary</option>
+        <option value="Transport">Transport</option>
+        <option value="Medicine">Medicine</option>
+        <option value="Transaction Cost">Transaction Cost</option>
+        <option value="Miscellaneous">Miscellaneous</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select id="category" required>
+        <option value="">Select a category</option>
+        <option value="Discretionary">Discretionary</option>
+        <option value="Dining Out">Dining Out</option>
+        <option value="Living Expenses">Living Expenses</option>
+        <option value="Charity">Charity</option>
+        <option value="Transport">Transport</option>
+        <option value="Medical">Medical</option>
+        <option value="Mpesa Transaction cost">Mpesa Transaction cost</option>
+        <option value="Salary">Salary</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="categoryType">Category Type</label>
+      <select id="categoryType" required>
+        <option value="">Select category type</option>
+        <option value="Expense">Expense</option>
+        <option value="Income">Income</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="nature">Nature</label>
+      <select id="nature" required>
+        <option value="">Select nature</option>
+        <option value="FIXED">FIXED</option>
+        <option value="Variable">Variable</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="mode">Mode of Payment</label>
+      <select id="mode" required>
+        <option value="">Select payment mode</option>
+        <option value="Mpesa">Mpesa</option>
+        <option value="Cash">Cash</option>
+        <option value="Checking">Checking</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="description">Description (Optional)</label>
+      <textarea id="description" rows="3" placeholder="Add details..."></textarea>
+    </div>
+    <button id="submitExpense">Add to Google Sheet</button>
+    <a href="https://docs.google.com/spreadsheets/d/1DozKALIJ3HjTMbTE2uBMPJCh6tiU7uN-EEN_dQmLHUE/edit" target="_blank">View Google Sheet</a>
+  </div>
 
-    <script>
-        const SUBMIT_URL = 'https://script.google.com/macros/s/[new-id]/exec';
+  <script>
+    const SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbzTX0lnolRCKXDg8o1KEDCX7BqQM2QpKY_Pe5ci2rU-XbuU6_UU94UOC6qOYe5Q6pQvjw/exec';
 
-        const amountInput = document.getElementById('amount');
-        const subcategorySelect = document.getElementById('subcategory');
-        const categorySelect = document.getElementById('category');
-        const categoryTypeSelect = document.getElementById('categoryType');
-        const natureSelect = document.getElementById('nature');
-        const modeSelect = document.getElementById('mode');
-        const descriptionInput = document.getElementById('description');
-        const submitBtn = document.getElementById('submitExpense');
-        const statusMessage = document.getElementById('statusMessage');
+    const amountInput = document.getElementById('amount');
+    const subcategorySelect = document.getElementById('subcategory');
+    const categorySelect = document.getElementById('category');
+    const categoryTypeSelect = document.getElementById('categoryType');
+    const natureSelect = document.getElementById('nature');
+    const modeSelect = document.getElementById('mode');
+    const descriptionInput = document.getElementById('description');
+    const submitBtn = document.getElementById('submitExpense');
+    const statusMessage = document.getElementById('statusMessage');
 
-        const expenseCategories = [
-            { subcategory: "Clothes", category: "Discretionary", categoryType: "Expense", nature: "Variable" },
-            { subcategory: "Coffee", category: "Dining Out", categoryType: "Expense", nature: "Variable" },
-            { subcategory: "My Family", category: "Living Expenses", categoryType: "Expense", nature: "FIXED" },
-            { subcategory: "Home Expenses", category: "Living Expenses", categoryType: "Expense", nature: "FIXED" },
-            { subcategory: "Donation", category: "Charity", categoryType: "Expense", nature: "Variable" },
-            { subcategory: "Gas/Electrics", category: "Living Expenses", categoryType: "Expense", nature: "Variable" },
-            { subcategory: "Groceries", category: "Living Expenses", categoryType: "Expense", nature: "Variable" },
-            { subcategory: "Gym", category: "Discretionary", categoryType: "Expense", nature: "Variable" },
-            { subcategory: "Education Loan", category: "Living Expenses", categoryType: "Expense", nature: "FIXED" },
-            { subcategory: "Phone", category: "Living Expenses", categoryType: "Expense", nature: "FIXED" },
-            { subcategory: "Rent & Wifi", category: "Living Expenses", categoryType: "Expense", nature: "FIXED" },
-            { subcategory: "Food", category: "Dining Out", categoryType: "Expense", nature: "Variable" },
-            { subcategory: "Salary", category: "Salary", categoryType: "Income", nature: "FIXED" },
-            { subcategory: "Transport", category: "Transport", categoryType: "Expense", nature: "Variable" },
-            { subcategory: "Medicine", category: "Medical", categoryType: "Expense", nature: "Variable" },
-            { subcategory: "Transaction Cost", category: "Mpesa Transaction cost", categoryType: "Expense", nature: "Variable" },
-            { subcategory: "Miscellaneous", category: "Living Expenses", categoryType: "Expense", nature: "Variable" }
-        ];
+    const expenseCategories = [
+      { subcategory: "Clothes", category: "Discretionary", categoryType: "Expense", nature: "Variable" },
+      { subcategory: "Coffee", category: "Dining Out", categoryType: "Expense", nature: "Variable" },
+      { subcategory: "My Family", category: "Living Expenses", categoryType: "Expense", nature: "FIXED" },
+      { subcategory: "Home Expenses", category: "Living Expenses", categoryType: "Expense", nature: "FIXED" },
+      { subcategory: "Donation", category: "Charity", categoryType: "Expense", nature: "Variable" },
+      { subcategory: "Gas/Electrics", category: "Living Expenses", categoryType: "Expense", nature: "Variable" },
+      { subcategory: "Groceries", category: "Living Expenses", categoryType: "Expense", nature: "Variable" },
+      { subcategory: "Gym", category: "Discretionary", categoryType: "Expense", nature: "Variable" },
+      { subcategory: "Education Loan", category: "Living Expenses", categoryType: "Expense", nature: "FIXED" },
+      { subcategory: "Phone", category: "Living Expenses", categoryType: "Expense", nature: "FIXED" },
+      { subcategory: "Rent & Wifi", category: "Living Expenses", categoryType: "Expense", nature: "FIXED" },
+      { subcategory: "Food", category: "Dining Out", categoryType: "Expense", nature: "Variable" },
+      { subcategory: "Salary", category: "Salary", categoryType: "Income", nature: "FIXED" },
+      { subcategory: "Transport", category: "Transport", categoryType: "Expense", nature: "Variable" },
+      { subcategory: "Medicine", category: "Medical", categoryType: "Expense", nature: "Variable" },
+      { subcategory: "Transaction Cost", category: "Mpesa Transaction cost", categoryType: "Expense", nature: "Variable" },
+      { subcategory: "Miscellaneous", category: "Living Expenses", categoryType: "Expense", nature: "Variable" }
+    ];
 
-        const categoryMap = {};
-        expenseCategories.forEach(item => {
-            categoryMap[item.subcategory] = {
-                category: item.category,
-                categoryType: item.categoryType,
-                nature: item.nature
-            };
+    const categoryMap = {};
+    expenseCategories.forEach(item => {
+      categoryMap[item.subcategory] = {
+        category: item.category,
+        categoryType: item.categoryType,
+        nature: item.nature
+      };
+    });
+
+    subcategorySelect.addEventListener('change', function() {
+      const selected = this.value;
+      const data = categoryMap[selected];
+      if (data) {
+        categorySelect.value = data.category;
+        categoryTypeSelect.value = data.categoryType;
+        natureSelect.value = data.nature;
+      } else {
+        categorySelect.value = '';
+        categoryTypeSelect.value = '';
+        natureSelect.value = '';
+      }
+    });
+
+    function showStatus(element, message, type) {
+      element.textContent = message;
+      element.className = 'status ' + type;
+      element.style.display = 'block';
+      if (type !== 'loading') {
+        setTimeout(() => { element.style.display = 'none'; }, 5000);
+      }
+    }
+
+    submitBtn.addEventListener('click', async () => {
+      if (!amountInput.value || !subcategorySelect.value || !categorySelect.value || 
+          !categoryTypeSelect.value || !natureSelect.value || !modeSelect.value) {
+        showStatus(statusMessage, 'Fill all required fields', 'error');
+        return;
+      }
+      if (parseFloat(amountInput.value) <= 0) {
+        showStatus(statusMessage, 'Amount must be greater than 0', 'error');
+        return;
+      }
+
+      try {
+        showStatus(statusMessage, 'Saving expense...', 'loading');
+        const expense = {
+          action: 'submitExpense',
+          amount: amountInput.value,
+          subcategory: subcategorySelect.value,
+          category: categorySelect.value,
+          categoryType: categoryTypeSelect.value,
+          nature: natureSelect.value,
+          mode: modeSelect.value,
+          description: descriptionInput.value || '',
+          date: new Date().toISOString()
+        };
+
+        const response = await fetch(SUBMIT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(expense)
         });
 
-        subcategorySelect.addEventListener('change', function() {
-            const selected = this.value;
-            const data = categoryMap[selected];
-            if (data) {
-                categorySelect.value = data.category;
-                categoryTypeSelect.value = data.categoryType;
-                natureSelect.value = data.nature;
-            } else {
-                categorySelect.value = '';
-                categoryTypeSelect.value = '';
-                natureSelect.value = '';
-            }
-        });
-
-        function showStatus(element, message, type) {
-            element.textContent = message;
-            element.className = 'status ' + type;
-            element.style.display = 'block';
-            if (type !== 'loading') {
-                setTimeout(() => { element.style.display = 'none'; }, 5000);
-            }
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`HTTP error ${response.status}: ${errorText}`);
         }
 
-        submitBtn.addEventListener('click', async () => {
-            if (!amountInput.value || !subcategorySelect.value || !categorySelect.value || 
-                !categoryTypeSelect.value || !natureSelect.value || !modeSelect.value) {
-                showStatus(statusMessage, 'Fill all required fields', 'error');
-                console.error('Missing required fields');
-                return;
-            }
-            if (parseFloat(amountInput.value) <= 0) {
-                showStatus(statusMessage, 'Amount must be greater than 0', 'error');
-                console.error('Invalid amount');
-                return;
-            }
-
-            try {
-                showStatus(statusMessage, 'Saving expense...', 'loading');
-                const expense = {
-                    action: 'submitExpense',
-                    amount: amountInput.value,
-                    subcategory: subcategorySelect.value,
-                    category: categorySelect.value,
-                    categoryType: categoryTypeSelect.value,
-                    nature: natureSelect.value,
-                    mode: modeSelect.value,
-                    description: descriptionInput.value || '',
-                    date: new Date().toISOString()
-                };
-                console.log('Submitting expense to:', SUBMIT_URL);
-                console.log('Expense:', expense);
-                const response = await fetch(SUBMIT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(expense)
-                });
-
-                console.log('Response status:', response.status);
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(HTTP error ${response.status}: ${errorText});
-                }
-
-                const result = await response.json();
-                console.log('Submit response:', result);
-                if (result.success) {
-                    amountInput.value = '';
-                    subcategorySelect.value = '';
-                    categorySelect.value = '';
-                    categoryTypeSelect.value = '';
-                    natureSelect.value = '';
-                    modeSelect.value = '';
-                    descriptionInput.value = '';
-                    showStatus(statusMessage, 'Expense added!', 'success');
-                } else {
-                    showStatus(statusMessage, result.error || 'Failed to add expense', 'error');
-                    console.error('Submit failed:', result.error);
-                }
-            } catch (error) {
-                console.error('Submit error:', error.message);
-                showStatus(statusMessage, Submit failed: ${error.message}, 'error');
-            }
-        });
-    </script>
+        const result = await response.json();
+        if (result.success) {
+          document.querySelector('form')?.reset?.();
+          amountInput.value = '';
+          subcategorySelect.value = '';
+          categorySelect.value = '';
+          categoryTypeSelect.value = '';
+          natureSelect.value = '';
+          modeSelect.value = '';
+          descriptionInput.value = '';
+          showStatus(statusMessage, 'Expense added!', 'success');
+        } else {
+          showStatus(statusMessage, result.error || 'Failed to add expense', 'error');
+        }
+      } catch (error) {
+        showStatus(statusMessage, `Submit failed: ${error.message}`, 'error');
+      }
+    });
+  </script>
 </body>
 </html>
