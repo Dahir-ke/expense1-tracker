@@ -1,97 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Expense Tracker</title>
-  <style>
-    body { font-family: Arial; padding: 20px; background: #f4f4f4; }
-    .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; font-size: 16px; }
-    button { background: #28a745; color: white; border: none; padding: 12px; font-size: 16px; width: 100%; cursor: pointer; }
-    .status { margin-top: 10px; text-align: center; font-weight: bold; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h2>Expense Tracker</h2>
-    <input type="number" id="amount" placeholder="Amount (Ksh)">
-    <select id="subcategory">
-      <option value="">Select Subcategory</option>
-      <option value="Groceries">Groceries</option>
-      <option value="Transport">Transport</option>
-      <option value="Medicine">Medicine</option>
-      <option value="Salary">Salary</option>
-    </select>
-    <select id="category">
-      <option value="Living Expenses">Living Expenses</option>
-      <option value="Medical">Medical</option>
-      <option value="Transport">Transport</option>
-      <option value="Income">Income</option>
-    </select>
-    <select id="categoryType">
-      <option value="Expense">Expense</option>
-      <option value="Income">Income</option>
-    </select>
-    <select id="nature">
-      <option value="FIXED">FIXED</option>
-      <option value="Variable">Variable</option>
-    </select>
-    <select id="mode">
-      <option value="Mpesa">Mpesa</option>
-      <option value="Cash">Cash</option>
-      <option value="Bank">Bank</option>
-    </select>
-    <textarea id="description" placeholder="Optional Description"></textarea>
-    <button onclick="submitData()">Submit</button>
-    <div class="status" id="statusMsg"></div>
-  </div>
+<script>
+  const SUBMIT_URL = 'https://corsproxy.io/?https://script.google.com/macros/s/AKfycbyxUZawt9GspidEMVlM8Fz5s32fwBp4ykSpIOjR6W8fSmPeAQHcSQSoPTqH315dDhwC/exec';
 
-  <script>
-    const SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbyxUZawt9GspidEMVlM8Fz5s32fwBp4ykSpIOjR6W8fSmPeAQHcSQSoPTqH315dDhwC/exec';
+  function submitData() {
+    const amount = document.getElementById('amount').value;
+    const subcategory = document.getElementById('subcategory').value;
+    const category = document.getElementById('category').value;
+    const categoryType = document.getElementById('categoryType').value;
+    const nature = document.getElementById('nature').value;
+    const mode = document.getElementById('mode').value;
+    const description = document.getElementById('description').value;
 
-    function submitData() {
-      const amount = document.getElementById('amount').value;
-      const subcategory = document.getElementById('subcategory').value;
-      const category = document.getElementById('category').value;
-      const categoryType = document.getElementById('categoryType').value;
-      const nature = document.getElementById('nature').value;
-      const mode = document.getElementById('mode').value;
-      const description = document.getElementById('description').value;
-
-      if (!amount || !subcategory || !category || !categoryType || !nature || !mode) {
-        document.getElementById('statusMsg').textContent = "Please fill all required fields.";
-        return;
-      }
-
-      const data = {
-        amount,
-        subcategory,
-        category,
-        categoryType,
-        nature,
-        mode,
-        description
-      };
-
-      document.getElementById('statusMsg').textContent = "Sending...";
-
-      fetch(SUBMIT_URL, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .then(res => res.json())
-      .then(result => {
-        if (result.success) {
-          document.getElementById('statusMsg').textContent = "✅ Expense saved!";
-        } else {
-          document.getElementById('statusMsg').textContent = "❌ Error: " + result.error;
-        }
-      })
-      .catch(err => {
-        document.getElementById('statusMsg').textContent = "❌ Submit failed: " + err.message;
-      });
+    if (!amount || !subcategory || !category || !categoryType || !nature || !mode) {
+      document.getElementById('statusMsg').textContent = "Please fill all required fields.";
+      return;
     }
-  </script>
-</body>
-</html>
+
+    const data = {
+      amount,
+      subcategory,
+      category,
+      categoryType,
+      nature,
+      mode,
+      description
+    };
+
+    document.getElementById('statusMsg').textContent = "Sending...";
+
+    fetch(SUBMIT_URL, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' }
+    })
+    .then(res => res.json())
+    .then(result => {
+      if (result.success) {
+        document.getElementById('statusMsg').textContent = "✅ Expense saved!";
+      } else {
+        document.getElementById('statusMsg').textContent = "❌ Error: " + result.error;
+      }
+    })
+    .catch(err => {
+      document.getElementById('statusMsg').textContent = "❌ Submit failed: " + err.message;
+    });
+  }
+</script>
