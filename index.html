@@ -2,203 +2,96 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Expense Tracker</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f2f5;
-      padding: 20px;
-    }
-    .container {
-      max-width: 600px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h2 {
-      text-align: center;
-      color: #333;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    label {
-      font-weight: bold;
-    }
-    input, select, textarea, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-    button {
-      background-color: #4285f4;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #3367d6;
-    }
-    .status {
-      display: none;
-      margin-top: 10px;
-      padding: 10px;
-      text-align: center;
-      border-radius: 5px;
-    }
-    .status.success { background-color: #e6f4ea; color: #34a853; display: block; }
-    .status.error { background-color: #ffe6e6; color: #ea4335; display: block; }
-    .status.loading { background-color: #fff3e0; color: #fbbc05; display: block; }
+    body { font-family: Arial; padding: 20px; background: #f4f4f4; }
+    .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; font-size: 16px; }
+    button { background: #28a745; color: white; border: none; padding: 12px; font-size: 16px; width: 100%; cursor: pointer; }
+    .status { margin-top: 10px; text-align: center; font-weight: bold; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Add Expense</h2>
-    <div id="statusMessage" class="status"></div>
-    
-    <div class="form-group">
-      <label for="amount">Amount (Ksh)</label>
-      <input type="number" id="amount" required>
-    </div>
-    <div class="form-group">
-      <label for="subcategory">Sub-category</label>
-      <select id="subcategory" required>
-        <option value="">Select sub-category</option>
-        <option value="Clothes">Clothes</option>
-        <option value="Coffee">Coffee</option>
-        <option value="My Family">My Family</option>
-        <option value="Home Expenses">Home Expenses</option>
-        <option value="Donation">Donation</option>
-        <option value="Gas/Electrics">Gas/Electrics</option>
-        <option value="Groceries">Groceries</option>
-        <option value="Gym">Gym</option>
-        <option value="Education Loan">Education Loan</option>
-        <option value="Phone">Phone</option>
-        <option value="Rent & Wifi">Rent & Wifi</option>
-        <option value="Food">Food</option>
-        <option value="Salary">Salary</option>
-        <option value="Transport">Transport</option>
-        <option value="Medicine">Medicine</option>
-        <option value="Transaction Cost">Transaction Cost</option>
-        <option value="Miscellaneous">Miscellaneous</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="category">Category</label>
-      <select id="category" required>
-        <option value="">Select category</option>
-        <option value="Discretionary">Discretionary</option>
-        <option value="Dining Out">Dining Out</option>
-        <option value="Living Expenses">Living Expenses</option>
-        <option value="Charity">Charity</option>
-        <option value="Transport">Transport</option>
-        <option value="Medical">Medical</option>
-        <option value="Mpesa Transaction cost">Mpesa Transaction cost</option>
-        <option value="Salary">Salary</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="categoryType">Category Type</label>
-      <select id="categoryType" required>
-        <option value="">Select type</option>
-        <option value="Expense">Expense</option>
-        <option value="Income">Income</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="nature">Nature</label>
-      <select id="nature" required>
-        <option value="">Select nature</option>
-        <option value="FIXED">FIXED</option>
-        <option value="Variable">Variable</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="mode">Mode of Payment</label>
-      <select id="mode" required>
-        <option value="">Select mode</option>
-        <option value="Mpesa">Mpesa</option>
-        <option value="Cash">Cash</option>
-        <option value="Checking">Checking</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="description">Description (Optional)</label>
-      <textarea id="description" rows="3"></textarea>
-    </div>
-    <button id="submitExpense">Add to Google Sheet</button>
-    <a href="https://docs.google.com/spreadsheets/d/1xgi_YaV-I_U6g2PIYuQV7GFWu2DZMvcoYqsstsr9tG4/edit" target="_blank">📄 View Google Sheet</a>
+    <h2>Expense Tracker</h2>
+    <input type="number" id="amount" placeholder="Amount (Ksh)">
+    <select id="subcategory">
+      <option value="">Select Subcategory</option>
+      <option value="Groceries">Groceries</option>
+      <option value="Transport">Transport</option>
+      <option value="Medicine">Medicine</option>
+      <option value="Salary">Salary</option>
+    </select>
+    <select id="category">
+      <option value="Living Expenses">Living Expenses</option>
+      <option value="Medical">Medical</option>
+      <option value="Transport">Transport</option>
+      <option value="Income">Income</option>
+    </select>
+    <select id="categoryType">
+      <option value="Expense">Expense</option>
+      <option value="Income">Income</option>
+    </select>
+    <select id="nature">
+      <option value="FIXED">FIXED</option>
+      <option value="Variable">Variable</option>
+    </select>
+    <select id="mode">
+      <option value="Mpesa">Mpesa</option>
+      <option value="Cash">Cash</option>
+      <option value="Bank">Bank</option>
+    </select>
+    <textarea id="description" placeholder="Optional Description"></textarea>
+    <button onclick="submitData()">Submit</button>
+    <div class="status" id="statusMsg"></div>
   </div>
 
   <script>
-    const SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbzEgET9Mpdv6-Vn-R5MbOdDL4lc1gIG5GAiggHA9xbrnWOczt14nZfD2pTOEVXPeb-r/exec';
+    const SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbyxUZawt9GspidEMVlM8Fz5s32fwBp4ykSpIOjR6W8fSmPeAQHcSQSoPTqH315dDhwC/exec';
 
-    const amountInput = document.getElementById('amount');
-    const subcategorySelect = document.getElementById('subcategory');
-    const categorySelect = document.getElementById('category');
-    const categoryTypeSelect = document.getElementById('categoryType');
-    const natureSelect = document.getElementById('nature');
-    const modeSelect = document.getElementById('mode');
-    const descriptionInput = document.getElementById('description');
-    const submitBtn = document.getElementById('submitExpense');
-    const statusMessage = document.getElementById('statusMessage');
+    function submitData() {
+      const amount = document.getElementById('amount').value;
+      const subcategory = document.getElementById('subcategory').value;
+      const category = document.getElementById('category').value;
+      const categoryType = document.getElementById('categoryType').value;
+      const nature = document.getElementById('nature').value;
+      const mode = document.getElementById('mode').value;
+      const description = document.getElementById('description').value;
 
-    function showStatus(message, type) {
-      statusMessage.textContent = message;
-      statusMessage.className = 'status ' + type;
-      if (type !== 'loading') {
-        setTimeout(() => statusMessage.style.display = 'none', 5000);
-      }
-    }
-
-    submitBtn.addEventListener('click', async () => {
-      if (!amountInput.value || !subcategorySelect.value || !categorySelect.value || 
-          !categoryTypeSelect.value || !natureSelect.value || !modeSelect.value) {
-        showStatus('Fill all required fields', 'error');
+      if (!amount || !subcategory || !category || !categoryType || !nature || !mode) {
+        document.getElementById('statusMsg').textContent = "Please fill all required fields.";
         return;
       }
 
       const data = {
-        amount: amountInput.value,
-        subcategory: subcategorySelect.value,
-        category: categorySelect.value,
-        categoryType: categoryTypeSelect.value,
-        nature: natureSelect.value,
-        mode: modeSelect.value,
-        description: descriptionInput.value
+        amount,
+        subcategory,
+        category,
+        categoryType,
+        nature,
+        mode,
+        description
       };
 
-      try {
-        showStatus('Saving...', 'loading');
-        const response = await fetch(SUBMIT_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
+      document.getElementById('statusMsg').textContent = "Sending...";
 
-        const result = await response.json();
+      fetch(SUBMIT_URL, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(res => res.json())
+      .then(result => {
         if (result.success) {
-          showStatus('Expense added!', 'success');
-          amountInput.value = '';
-          subcategorySelect.value = '';
-          categorySelect.value = '';
-          categoryTypeSelect.value = '';
-          natureSelect.value = '';
-          modeSelect.value = '';
-          descriptionInput.value = '';
+          document.getElementById('statusMsg').textContent = "✅ Expense saved!";
         } else {
-          showStatus('Error: ' + result.error, 'error');
+          document.getElementById('statusMsg').textContent = "❌ Error: " + result.error;
         }
-      } catch (err) {
-        showStatus('Submit failed: ' + err.message, 'error');
-      }
-    });
+      })
+      .catch(err => {
+        document.getElementById('statusMsg').textContent = "❌ Submit failed: " + err.message;
+      });
+    }
   </script>
 </body>
 </html>
