@@ -1,56 +1,177 @@
-<script>
-  const SUBMIT_URL = 'https://sheetdb.io/api/v1/YOUR_ACTUAL_SHEETDB_ID_HERE'; // 👈 Replace with your SheetDB API URL
-
-  function submitData() {
-    const amount = document.getElementById('amount').value;
-    const subcategory = document.getElementById('subcategory').value;
-    const category = document.getElementById('category').value;
-    const categoryType = document.getElementById('categoryType').value;
-    const nature = document.getElementById('nature').value;
-    const mode = document.getElementById('mode').value;
-    const description = document.getElementById('description').value;
-
-    if (!amount || !subcategory || !category || !categoryType || !nature || !mode) {
-      document.getElementById('statusMsg').textContent = "Please fill all required fields.";
-      return;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Expense Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      padding: 20px;
     }
+    .container {
+      max-width: 600px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    button {
+      background: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #3367d6;
+    }
+    .status {
+      text-align: center;
+      padding: 10px;
+      border-radius: 5px;
+      display: none;
+    }
+    .success { background: #e6f4ea; color: #34a853; }
+    .error { background: #ffe6e6; color: #ea4335; }
+    .loading { background: #fff3e0; color: #fbbc05; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Add Expense</h2>
+    <div id="statusMessage" class="status"></div>
 
-    const today = new Date().toLocaleDateString('en-GB'); // Format: DD/MM/YYYY
+    <label for="amount">Amount (Ksh)</label>
+    <input type="number" id="amount" placeholder="e.g. 1000" />
 
-    const data = {
-      data: {
-        date: today,
-        amount,
-        subcategory,
-        category,
-        categoryType,
-        nature,
-        mode,
-        description
-      }
+    <label for="subcategory">Sub-category</label>
+    <select id="subcategory">
+      <option value="">Choose subcategory</option>
+      <option value="Clothes">Clothes</option>
+      <option value="Coffee">Coffee</option>
+      <option value="My Family">My Family</option>
+      <option value="Home Expenses">Home Expenses</option>
+      <option value="Donation">Donation</option>
+      <option value="Gas/Electrics">Gas/Electrics</option>
+      <option value="Groceries">Groceries</option>
+      <option value="Gym">Gym</option>
+      <option value="Education Loan">Education Loan</option>
+      <option value="Phone">Phone</option>
+      <option value="Rent & Wifi">Rent & Wifi</option>
+      <option value="Food">Food</option>
+      <option value="Salary">Salary</option>
+      <option value="Transport">Transport</option>
+      <option value="Medicine">Medicine</option>
+      <option value="Transaction Cost">Transaction Cost</option>
+      <option value="Miscellaneous">Miscellaneous</option>
+    </select>
+
+    <label for="mode">Mode of Payment</label>
+    <select id="mode">
+      <option value="">Choose mode</option>
+      <option value="Mpesa">Mpesa</option>
+      <option value="Cash">Cash</option>
+      <option value="Checking">Checking</option>
+    </select>
+
+    <label for="description">Description</label>
+    <textarea id="description" rows="3" placeholder="Optional note..."></textarea>
+
+    <button id="submitBtn">Add Expense</button>
+  </div>
+
+  <script>
+    const API_KEY = "AIzaSyDPAdKnfIMkd7boyq20trVB-rQ3mfLR-9g";
+    const SHEET_ID = "1xgi_YaV-I_U6g2PIYuQV7GFWu2DZMvcoYqsstsr9tG4";
+    const SHEET_NAME = "Sheet1";
+    const statusEl = document.getElementById("statusMessage");
+
+    const expenseCategories = {
+      "Clothes": ["Discretionary", "Expense", "Variable"],
+      "Coffee": ["Dining Out", "Expense", "Variable"],
+      "My Family": ["Living Expenses", "Expense", "FIXED"],
+      "Home Expenses": ["Living Expenses", "Expense", "FIXED"],
+      "Donation": ["Charity", "Expense", "Variable"],
+      "Gas/Electrics": ["Living Expenses", "Expense", "Variable"],
+      "Groceries": ["Living Expenses", "Expense", "Variable"],
+      "Gym": ["Discretionary", "Expense", "Variable"],
+      "Education Loan": ["Living Expenses", "Expense", "FIXED"],
+      "Phone": ["Living Expenses", "Expense", "FIXED"],
+      "Rent & Wifi": ["Living Expenses", "Expense", "FIXED"],
+      "Food": ["Dining Out", "Expense", "Variable"],
+      "Salary": ["Salary", "Income", "FIXED"],
+      "Transport": ["Transport", "Expense", "Variable"],
+      "Medicine": ["Medical", "Expense", "Variable"],
+      "Transaction Cost": ["Mpesa Transaction cost", "Expense", "Variable"],
+      "Miscellaneous": ["Living Expenses", "Expense", "Variable"]
     };
 
-    document.getElementById('statusMsg').textContent = "Sending...";
+    document.getElementById("submitBtn").addEventListener("click", async () => {
+      const amount = document.getElementById("amount").value;
+      const subcategory = document.getElementById("subcategory").value;
+      const mode = document.getElementById("mode").value;
+      const description = document.getElementById("description").value;
 
-    fetch(SUBMIT_URL, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' }
-    })
-    .then(res => res.json())
-    .then(result => {
-      document.getElementById('statusMsg').textContent = "✅ Expense saved!";
-      // Reset form
-      document.getElementById('amount').value = '';
-      document.getElementById('subcategory').value = '';
-      document.getElementById('category').value = '';
-      document.getElementById('categoryType').value = '';
-      document.getElementById('nature').value = '';
-      document.getElementById('mode').value = '';
-      document.getElementById('description').value = '';
-    })
-    .catch(err => {
-      document.getElementById('statusMsg').textContent = "❌ Submit failed: " + err.message;
+      if (!amount || !subcategory || !mode) {
+        showStatus("Please fill all required fields", "error");
+        return;
+      }
+
+      const [category, categoryType, nature] = expenseCategories[subcategory] || ["", "", ""];
+      const date = new Date().toISOString();
+
+      const row = [date, amount, subcategory, category, categoryType, nature, mode, description];
+
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A1:H1:append?valueInputOption=USER_ENTERED&key=${API_KEY}`;
+
+      try {
+        showStatus("Saving...", "loading");
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ values: [row] })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          showStatus("✅ Expense added!", "success");
+          document.getElementById("amount").value = "";
+          document.getElementById("subcategory").value = "";
+          document.getElementById("mode").value = "";
+          document.getElementById("description").value = "";
+        } else {
+          showStatus("❌ Failed: " + (data.error.message || "Unknown error"), "error");
+        }
+      } catch (err) {
+        showStatus("❌ Error: " + err.message, "error");
+      }
     });
-  }
-</script>
+
+    function showStatus(message, type) {
+      statusEl.textContent = message;
+      statusEl.className = `status ${type}`;
+      statusEl.style.display = "block";
+      setTimeout(() => statusEl.style.display = "none", 6000);
+    }
+  </script>
+</body>
+</html>
