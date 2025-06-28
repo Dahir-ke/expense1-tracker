@@ -24,6 +24,12 @@
     .container {
       max-width: 1200px;
       margin: 0 auto;
+      animation: fadeIn 0.8s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
     header {
@@ -279,6 +285,15 @@
       background: #2d9247;
     }
     
+    .btn-danger {
+      background: #ea4335;
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #d32f2f;
+    }
+    
     .status-message {
       padding: 15px;
       border-radius: 8px;
@@ -303,6 +318,12 @@
     .status-loading {
       background: #fff3e0;
       color: #fbbc05;
+      display: block;
+    }
+    
+    .status-info {
+      background: #e8f0fe;
+      color: #4285f4;
       display: block;
     }
     
@@ -356,50 +377,54 @@
       line-height: 1.5;
     }
     
-    .local-data-panel {
-      background: #e6f4ea;
+    .log-diagram {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 30px 0;
+      padding: 20px;
+      background: white;
       border-radius: 15px;
-      padding: 25px;
-      margin-bottom: 30px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     }
     
-    .local-data-header {
+    .log-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 20px;
+      text-align: center;
+      max-width: 200px;
+    }
+    
+    .log-step i {
+      font-size: 2.5rem;
+      color: #4285f4;
+      margin-bottom: 15px;
+    }
+    
+    .log-step .step-number {
+      width: 30px;
+      height: 30px;
+      background: #4285f4;
+      color: white;
+      border-radius: 50%;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
+      justify-content: center;
+      margin-bottom: 10px;
     }
     
-    .local-data-content {
-      background: white;
+    .step-arrow {
+      font-size: 1.5rem;
+      color: #5f6368;
+    }
+    
+    .log-solution {
+      background: #e6f4ea;
       border-radius: 10px;
       padding: 20px;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-    
-    .local-expense-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid #eee;
-    }
-    
-    .local-expense-item:last-child {
-      border-bottom: none;
-    }
-    
-    .local-expense-amount {
-      font-weight: 700;
-      color: #ea4335;
-    }
-    
-    .sync-actions {
-      display: flex;
-      gap: 15px;
       margin-top: 20px;
-      flex-wrap: wrap;
     }
     
     footer {
@@ -420,7 +445,7 @@
         grid-template-columns: 1fr;
       }
       
-      .form-actions, .sync-actions {
+      .form-actions {
         flex-direction: column;
       }
       
@@ -434,10 +459,13 @@
         gap: 15px;
       }
       
-      .local-data-header {
+      .log-diagram {
         flex-direction: column;
-        align-items: flex-start;
         gap: 15px;
+      }
+      
+      .step-arrow {
+        transform: rotate(90deg);
       }
     }
   </style>
@@ -451,7 +479,7 @@
       </div>
       <div class="sync-status">
         <span class="status-indicator status-connected"></span>
-        Google Sheets Sync: Connected
+        Google Sheets Connected
       </div>
     </header>
     
@@ -490,9 +518,9 @@
       </div>
       
       <div class="chart-card">
-        <h3><i class="fas fa-chart-bar"></i> Monthly Spending Trend</h3>
+        <h3><i class="fas fa-chart-bar"></i> Monthly Spending</h3>
         <div class="chart-wrapper">
-          <canvas id="trendChart"></canvas>
+          <canvas id="monthlyChart"></canvas>
         </div>
       </div>
     </div>
@@ -559,11 +587,8 @@
         <button id="submitBtn" class="btn btn-primary">
           <i class="fas fa-cloud-upload-alt"></i> Save to Google Sheets
         </button>
-        <button id="saveLocalBtn" class="btn btn-warning">
-          <i class="fas fa-save"></i> Save Locally
-        </button>
-        <button id="testConnectionBtn" class="btn btn-secondary">
-          <i class="fas fa-plug"></i> Test Connection
+        <button id="testBtn" class="btn btn-secondary">
+          <i class="fas fa-vial"></i> Test Connection
         </button>
       </div>
     </div>
@@ -571,59 +596,109 @@
     <div class="troubleshoot-section">
       <div class="troubleshoot-header">
         <i class="fas fa-exclamation-triangle fa-2x"></i>
-        <h2>Connection Troubleshooting</h2>
+        <h2>Solving "No Logs Available" Issue</h2>
       </div>
       
       <p style="margin-bottom: 25px; line-height: 1.6; color: #5f6368;">
-        If you're seeing "Failed to fetch" errors when trying to save to Google Sheets, follow these troubleshooting steps to resolve connectivity issues.
+        If you're seeing "No logs are available for this execution" in Google Apps Script, here's how to resolve it:
       </p>
       
       <div class="troubleshoot-grid">
         <div class="troubleshoot-card">
-          <h4><i class="fas fa-cogs"></i> Google Script Settings</h4>
+          <h4><i class="fas fa-sync-alt"></i> Logging Delays</h4>
           <ul>
-            <li>Ensure your Google Apps Script is deployed as a web app</li>
-            <li>Set "Execute as" to "Me" in deployment settings</li>
-            <li>Set "Who has access" to "Anyone, even anonymous"</li>
-            <li>Re-deploy after making any changes</li>
-          </ul>
-        </div>
-        
-        <div class="troubleshoot-card">
-          <h4><i class="fas fa-link"></i> Verify Script URL</h4>
-          <ul>
-            <li>Confirm the script URL is correct</li>
-            <li>Make sure you're using the latest deployment URL</li>
-            <li>Test the URL directly in a browser</li>
-            <li>Check for typos in the URL</li>
-          </ul>
-        </div>
-        
-        <div class="troubleshoot-card">
-          <h4><i class="fas fa-shield-alt"></i> Security Settings</h4>
-          <ul>
-            <li>Check your browser's security settings</li>
-            <li>Disable any extensions that might block requests</li>
-            <li>Try in incognito mode to rule out extension issues</li>
-            <li>Ensure no firewall is blocking the request</li>
+            <li>Logs may take several minutes to appear</li>
+            <li>Refresh the logs page after 5-10 minutes</li>
+            <li>Google processes logs asynchronously</li>
+            <li>High traffic can cause additional delays</li>
           </ul>
         </div>
         
         <div class="troubleshoot-card">
           <h4><i class="fas fa-code"></i> Script Debugging</h4>
           <ul>
-            <li>Check your script's execution logs</li>
-            <li>Verify your script handles POST requests</li>
-            <li>Ensure your script returns proper CORS headers</li>
-            <li>Test with a simple GET request first</li>
+            <li>Add explicit log statements to your script</li>
+            <li>Use <code>Logger.log()</code> for key operations</li>
+            <li>Add error logging in catch blocks</li>
+            <li>Check View > Logs in the Apps Script editor</li>
           </ul>
         </div>
+        
+        <div class="troubleshoot-card">
+          <h4><i class="fas fa-cogs"></i> Deployment Settings</h4>
+          <ul>
+            <li>Redeploy your script after making changes</li>
+            <li>Ensure you're testing the latest deployment</li>
+            <li>Check execution permissions</li>
+            <li>Verify "Who has access" settings</li>
+          </ul>
+        </div>
+        
+        <div class="troubleshoot-card">
+          <h4><i class="fas fa-history"></i> Execution History</h4>
+          <ul>
+            <li>Check View > Executions in Apps Script</li>
+            <li>Look for completed executions</li>
+            <li>Click on an execution to see its logs</li>
+            <li>Note that logs are only stored for 7 days</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="log-diagram">
+        <div class="log-step">
+          <div class="step-number">1</div>
+          <i class="fas fa-laptop-code"></i>
+          <h4>Your Request</h4>
+          <p>Expense form submitted</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="log-step">
+          <div class="step-number">2</div>
+          <i class="fas fa-server"></i>
+          <h4>Google Servers</h4>
+          <p>Apps Script execution</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="log-step">
+          <div class="step-number">3</div>
+          <i class="fas fa-file-alt"></i>
+          <h4>Log Processing</h4>
+          <p>Logs stored asynchronously</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="log-step">
+          <div class="step-number">4</div>
+          <i class="fas fa-list"></i>
+          <h4>Log Availability</h4>
+          <p>View logs after delay</p>
+        </div>
+      </div>
+      
+      <div class="log-solution">
+        <h4><i class="fas fa-lightbulb"></i> Pro Tip: Add Explicit Logging</h4>
+        <p>Add these lines to your Google Apps Script to ensure logs are generated:</p>
+        <pre style="background: #2c3e50; color: white; padding: 15px; border-radius: 8px; margin-top: 10px;">
+function doPost(e) {
+  console.log("Request received at: " + new Date());
+  try {
+    // ... your existing code ...
+    console.log("Data saved successfully");
+    return ContentService.createTextOutput(JSON.stringify({ success: true }));
+  } catch (err) {
+    console.error("Error: " + err.message);
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false, 
+      error: err.message 
+    }));
+  }
+}</pre>
       </div>
     </div>
     
     <footer>
       <p>Expense Tracker Dashboard &copy; 2023 | Google Sheets Integration</p>
-      <p>Connection Status: <span class="status-indicator status-connected"></span> Operational</p>
+      <p>Sheet: <a href="https://docs.google.com/spreadsheets/d/1xgi_YaV-I_U6g2PIYuQV7GFWu2DZMvcoYqsstsr9tG4/edit?gid=0#gid=0" target="_blank">View Google Sheet</a></p>
     </footer>
   </div>
 
@@ -690,18 +765,23 @@
         }
       });
       
-      // Trend Chart
-      const trendCtx = document.getElementById('trendChart').getContext('2d');
-      new Chart(trendCtx, {
-        type: 'bar',
+      // Monthly Bar Chart
+      const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+      new Chart(monthlyCtx, {
+        type: 'line',
         data: {
           labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
           datasets: [{
             label: 'Monthly Expenses (Ksh)',
             data: [18500, 19200, 21000, 22400, 23600, 24560, 22000],
-            backgroundColor: '#4285F4',
-            borderRadius: 6,
-            borderWidth: 0
+            backgroundColor: 'rgba(66, 133, 244, 0.1)',
+            borderColor: '#4285F4',
+            borderWidth: 3,
+            pointBackgroundColor: '#fff',
+            pointBorderColor: '#4285F4',
+            pointBorderWidth: 2,
+            tension: 0.3,
+            fill: true
           }]
         },
         options: {
@@ -726,9 +806,7 @@
       statusEl.textContent = message;
       statusEl.className = `status-message status-${type}`;
       statusEl.style.display = 'block';
-      setTimeout(() => {
-        statusEl.style.display = 'none';
-      }, 5000);
+      setTimeout(() => statusEl.style.display = 'none', 6000);
     }
     
     // Test connection to Google Apps Script
@@ -736,21 +814,37 @@
       try {
         showStatus("Testing connection to Google Sheets...", "loading");
         
-        // Simple HEAD request to test connectivity
-        await fetch(SUBMIT_URL, {
-          method: "HEAD",
-          mode: "no-cors"
+        const testPayload = {
+          amount: "1",
+          subcategory: "Connection Test",
+          category: "Test",
+          categoryType: "Test",
+          nature: "Test",
+          mode: "Test",
+          description: "This is a connection test",
+          date: new Date().toLocaleDateString()
+        };
+        
+        const response = await fetch(SUBMIT_URL, {
+          method: "POST",
+          body: JSON.stringify(testPayload),
+          headers: {
+            "Content-Type": "application/json"
+          }
         });
         
-        setTimeout(() => {
-          showStatus("✅ Connection to Google Sheets is working!", "success");
-        }, 1500);
+        const result = await response.json();
+        if (result.success) {
+          showStatus("✅ Connection to Google Sheets is working! Check logs in 5-10 minutes.", "success");
+        } else {
+          showStatus(`⚠️ Test successful but logs may be delayed: ${result.error}`, "error");
+        }
       } catch (error) {
         showStatus("❌ Connection failed: " + error.message, "error");
       }
     }
     
-    // Submit expense to Google Sheets - FIXED VERSION
+    // Submit expense to Google Sheets
     async function submitExpense() {
       const amount = document.getElementById("amount").value;
       const subcategory = document.getElementById("subcategory").value;
@@ -765,7 +859,6 @@
       
       const [category, categoryType, nature] = expenseCategories[subcategory] || ["", "", ""];
       
-      // Create payload matching what the Google Script expects
       const payload = {
         amount: amount,
         subcategory: subcategory,
@@ -774,7 +867,7 @@
         nature: nature,
         mode: mode,
         description: description,
-        date: new Date(date).toLocaleDateString() // Match the format in Google Script
+        date: new Date(date).toLocaleDateString()
       };
       
       try {
@@ -791,49 +884,14 @@
         const result = await response.json();
         
         if (result.success) {
-          showStatus("✅ Expense added successfully to Google Sheets!", "success");
+          showStatus("✅ Expense added successfully! Logs may take a few minutes to appear.", "success");
           clearForm();
         } else {
           showStatus(`❌ Error: ${result.error || "Failed to save expense"}`, "error");
         }
       } catch (error) {
-        showStatus("❌ Network Error: Failed to connect to Google Sheets. Try saving locally or check troubleshooting tips.", "error");
+        showStatus("❌ Network Error: Failed to connect to Google Sheets", "error");
       }
-    }
-    
-    // Save expense to localStorage
-    function saveExpenseLocally() {
-      const amount = document.getElementById("amount").value;
-      const subcategory = document.getElementById("subcategory").value;
-      const mode = document.getElementById("mode").value;
-      const description = document.getElementById("description").value;
-      const date = document.getElementById("date").value;
-      
-      if (!amount || !subcategory || !mode || !date) {
-        showStatus("Please fill all required fields", "error");
-        return;
-      }
-      
-      const [category, categoryType, nature] = expenseCategories[subcategory] || ["", "", ""];
-      
-      const expense = {
-        date: new Date(date).toLocaleDateString(),
-        amount,
-        subcategory,
-        category,
-        categoryType,
-        nature,
-        mode,
-        description
-      };
-      
-      // Get existing expenses or create new array
-      const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-      expenses.push(expense);
-      localStorage.setItem('expenses', JSON.stringify(expenses));
-      
-      showStatus("💾 Expense saved locally! You can sync later.", "success");
-      clearForm();
     }
     
     // Clear form fields
@@ -847,8 +905,7 @@
     
     // Event listeners
     document.getElementById("submitBtn").addEventListener("click", submitExpense);
-    document.getElementById("saveLocalBtn").addEventListener("click", saveExpenseLocally);
-    document.getElementById("testConnectionBtn").addEventListener("click", testConnection);
+    document.getElementById("testBtn").addEventListener("click", testConnection);
     
     // Initialize the app
     window.onload = function() {
